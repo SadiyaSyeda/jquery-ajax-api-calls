@@ -1,0 +1,67 @@
+<!doctype html>
+        <html>
+<head>
+    <body>
+<ul id="orders"></ul>
+
+<h4> Add Coffee Orders</h4>
+
+<p>Name:<input id="name" type="text"/></p>
+<p>Drink:<input id="drink" type="text" /></p>
+<button id="add-order">Add!</button>
+
+
+<script src="JQueryLib.js"></script>
+<script>
+    $(document).ready(function(){
+    $.ajax({
+    type:'GET',
+    url:'http://rest.learncode.academy/api/learncode/friends',
+    success:function(data){
+    $.each(data,function(i,item){
+     $('#orders').append('<li>name:'+item.name +',drink:'+item.drink+'<button data-id="id" class="remove">Delete</button>'+'<li>');
+    });
+    }
+    });
+
+    var order={
+    name:$('#name').val(),
+    drink:$('#drink').val(),
+    };
+
+$('#add-order').on('click',function(){
+var order={
+    name:$('#name').val(),
+    drink:$('#drink').val(),
+    };
+    $.ajax({
+    type:'POST',
+    url:'http://rest.learncode.academy/api/learncode/friends',
+    data:order,
+    success:function(item){
+    $('#orders').append('<li>name:'+item.name +',drink:'+item.drink+"<button data-id='{{id}}' class='remove'>Delete</button>"+'<li>');
+    },
+    error:function(){
+    alert('could not send data to server');
+    }
+    });
+    });
+
+    $('#orders').delegate('.remove','click',function(){
+    $.ajax({
+
+    type:'DELETE',
+
+    url:'http://rest.learncode.academy/api/learncode/friends/'+$(this).attr('data-id'),
+   success:function(){
+   $(this).closest('li').remove();
+   }
+   });
+    });
+    });
+
+</script>
+</body>
+</head>
+</html>
+
